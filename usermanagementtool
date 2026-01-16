@@ -1,0 +1,98 @@
+#!/bin/bash
+
+#I am creating a set of tools to help my girlfriend learn linux system administration without prior knowledge
+
+if [[ ${EUID:-$(id -u)} -ne 0 ]]  then
+echo "This script must be run as root , aka please run it like sudo ./nameofthescript" >&2
+exit 1
+fi
+
+
+
+add_user() {
+read -p "Enter account to add:" account
+if id "$account" &>/dev/null; then 
+echo " Account already exists"
+else useradd "$account" && passwd "$account"
+echo "User $account created"
+fi
+}
+
+delete_user() {
+read -p "Enter username to delete:" username
+if id $username &>/dev/null; then userdel -r $username
+echo "$username deleted!"
+else echo " $username does not exit on this computer. Please try again"
+
+fi
+}
+
+lock_user() {
+read -p "Enter the sussy baka you want to lock.:" baka
+if id $baka &>/dev/null; then passwd -l $baka
+echo " $baka has been imprisoned"
+else echo "$baka does not exist on this device. Please try again."
+fi
+}
+
+unlock_user() {
+read -p "Enter the name of the soul you would like to spare." name
+if id $name &>/dev/null; then passwd -u $name 
+echo "$name has been unlocked."
+else echo "$name does not exist on this computer. Please try again."
+fi
+}
+
+set_permissions() {
+read -p "Enter file path: " filepath
+read -p "Enter permissions( e.g 755)" perms
+
+if [[ -e "$filepath" ]]; then
+chmod "$perms" "$filepath"
+echo " Permissions set to $perms"
+else echo "File does not exist"
+fi
+}
+
+user_info() {
+read -p "Enter username: " username
+if id "$username" &>/dev/null; then id "$username"
+chage -l "$username"
+else echo "User not found."
+fi
+}
+
+pause() {
+read -p "Press Enter to continue..."
+}
+while true; do
+clear
+echo "==========================="
+echo "User & Permission Manager"
+echo "==========================="
+echo "1) Add User"
+echo "2) Delete User"
+echo "3) Lock User"
+echo "4) Unlock User"
+echo "5) Set File Permissions"
+echo "6) Show User info"
+echo "7) Exit"
+echo "============================="
+echo "Powered and developed by your favourite boyfriend :) "
+
+read -p "Choose what you want to do: " choice
+
+case $choice in
+1) add_user ;;
+2) delete_user ;;
+3) lock_user ;;
+4) unlock_user ;;
+5) set_permissions ;;
+6) user_info ;;
+7) echo "Exiting... Thank you for using my software , like , comment and subscribe "; exit 0 ;;
+*) echo "Invalid Option, has to be a number one of the options above" ;;
+esac
+
+pause
+done
+
