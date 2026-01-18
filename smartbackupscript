@@ -9,13 +9,12 @@ fi
 
 current_date=$(date +"%Y-%m-%d")
 
-rsync_options="-avb --backup-dir $dir2/current_date --delete --dry-run"
 read -p "Please enter the directory that you want to backup: " dir1
 read -p "Please enter the backup directory: " dir2
 
-if [[ -d $dir1 && $dir2 ]]
+if [[ -d "$dir1" && "$dir2" ]]
 then 
-$(which rsync) $rsync_options $dir1 $dir2 >> backup_$current_date.log
+$(which rsync) -avb --backup-dir="$dir1" --delete "$dir1/" "$dir2/" $dir2 >> backup_$current_date.log
 else echo "Please use it in this format. <source_directory> <target_directory>"
 fi
 
