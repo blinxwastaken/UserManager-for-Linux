@@ -1,0 +1,71 @@
+#!/bin/bash
+
+rsync() {
+# Check to see if rsync is installed;
+if ! command -v rsync >/dev/null 2>&1;
+then echo "Rsync is not installed on this computer. Please use your package manager to install it . For Debian based systems and Ubuntu, it's sudo apt install rsync -y , for RedHat based, it;s sudo dnf install rsync -y "
+exit 2
+fi
+
+current_date=$(date +"%Y-%m-%d")
+
+rsync_options="-avb --backup-dir $dir2/current_date --delete --dry-run"
+read -p "Please enter the directory that you want to backup: " dir1
+read -p "Please enter the backup directory: " dir2
+
+if [[ -d $dir1 && $dir2 ]]
+then 
+$(which rsync) $rsync_options $dir1 $dir2 >> backup_$current_date.log
+else echo "Please use it in this format. <source_directory> <target_directory>"
+fi
+
+}
+
+taro() {
+current_date=$(date +"%Y-%m-%d")
+
+read -p "Please enter the directory that you want to backup: " source_dir
+read -p "Please enter the backup directory: " backup_dir
+if [[ -d "$source_dir" && -d "$backup_dir" ]];
+then
+archive_name="$(basename "$source_dir")-$current_date.tar.gz"
+
+tar -czf "$backup_dir/$archive_name" "$source_dir" \ >> "backup_$current_date.log" 2>&1
+echo " Backup created at $backup_dir/ $archive_name"
+else
+echo " Error: Source or backup directory does not exist"
+return 1
+fi
+
+}
+
+
+pause() {
+read -p "Press Enter to Continue..."
+}
+while true; do 
+echo "++++++++++++++++"
+echo "The Compressor "
+echo "++++++++++++++++"
+echo " 1) Make a smart backup from one directory to another utilizing rsync. Best used for daily backups , home directories"
+echo " 2) Make an archive backup of something that needs to be stored for a long time but not accessed much, utilizes tar backup function , best used for old documents , records , etc.."
+echo " 3) Exit" 
+
+read -p "Choose what you want to do: " choice
+case $choice in
+1) rsync ;;
+2) taro ;;
+3) echo " Thank you for using my software. Goodbye :)"; exit 0 ;;
+*) echo " YOU "
+sleep 1
+    echo "HAVE TO"
+sleep 1
+echo " PICK"
+sleep 1
+echo " AN OPTION"
+sleep 1
+echo " BETWEEN 1-3"
+esac
+
+pause
+done
