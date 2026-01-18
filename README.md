@@ -40,7 +40,9 @@ Focused on safe experimentation and learning good habits.
 
 
 
-Who might find my tools useful:
+
+
+Who might find my tools useful⚙️: 
 
 Linux beginners
 
